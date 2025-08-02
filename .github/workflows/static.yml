@@ -1,175 +1,39 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Fascioli Studio Launch</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      display: flex;
-      min-height: 100vh;
-      background-color: white;
-      color: #4285F4;
-    }
+# .github/workflows/static.yml
 
-    .left, .right {
-      width: 50%;
-      padding: 40px;
-      box-sizing: border-box;
-    }
+name: Deploy static content to Pages
 
-    .left {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
 
-    .left h1 {
-      font-size: 3rem;
-      margin: 0;
-    }
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
-    .left h1 i {
-      font-style: italic;
-    }
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
-    .announcement {
-      color: red;
-      font-size: 1.2rem;
-      margin: 20px 0;
-    }
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    .email-signup {
-      margin-top: 30px;
-    }
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
-    .email-signup input[type="email"] {
-      width: 100%;
-      padding: 12px;
-      font-size: 1rem;
-      border: 1px solid #4285F4;
-      border-radius: 4px;
-      margin-top: 10px;
-    }
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'  # Upload the entire repo (where index.html lives)
 
-    .right {
-      background: #f4f4f4;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
-
-    .vertical-text {
-      position: absolute;
-      left: 0;
-      top: 0;
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
-      background-color: #4285F4;
-      color: white;
-      padding: 10px;
-      font-weight: bold;
-      letter-spacing: 2px;
-    }
-
-    .circle {
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, #f50 0%, #d30 100%);
-      border-radius: 50%;
-      margin-bottom: 40px;
-    }
-
-    .countdown {
-      font-size: 2rem;
-      font-weight: bold;
-      text-align: center;
-      color: white;
-    }
-
-    .countdown-labels {
-      font-size: 0.9rem;
-      margin-top: 5px;
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      max-width: 280px;
-    }
-
-    @media screen and (max-width: 768px) {
-      body {
-        flex-direction: column;
-      }
-
-      .left, .right {
-        width: 100%;
-      }
-
-      .vertical-text {
-        display: none;
-      }
-
-      .circle {
-        width: 200px;
-        height: 200px;
-      }
-    }
-  </style>
-</head>
-<body>
-
-  <div class="left">
-    <h1>A NEW ERA<br><i>In</i> LIVING<br>DESIGN</h1>
-    <div class="announcement">🔴 Fascioli Studio Launching Soon</div>
-
-    <div class="email-signup">
-      <div>Sign Up for Early Access & Special Deals</div>
-      <input type="email" placeholder="Email" />
-    </div>
-  </div>
-
-  <div class="right">
-    <div class="vertical-text">UNVEILING_PROJECTS_0.01A</div>
-    <div class="circle"></div>
-    <div class="countdown" id="countdown">--:--:--:--</div>
-    <div class="countdown-labels">
-      <div>Days</div>
-      <div>Hours</div>
-      <div>Minutes</div>
-      <div>Seconds</div>
-    </div>
-  </div>
-
-  <script>
-    function getNextMonthDate() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const nextMonth = now.getMonth() + 1;
-      return new Date(year, nextMonth, 1, 0, 0, 0);
-    }
-
-    function updateCountdown() {
-      const now = new Date().getTime();
-      const target = getNextMonthDate().getTime();
-      const distance = target - now;
-
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-      document.getElementById("countdown").innerHTML =
-        `${String(days).padStart(2, '0')}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    }
-
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
-  </script>
-</body>
-</html>
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
