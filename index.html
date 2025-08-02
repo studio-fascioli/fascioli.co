@@ -6,19 +6,22 @@
   <title>Fascioli Studio Launch</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
       display: flex;
-      min-height: 100vh;
-      background-color: white;
+      height: 100vh;
+      overflow: hidden;
+      background: white;
       color: #4285F4;
     }
 
     .left, .right {
       width: 50%;
-      padding: 40px;
-      box-sizing: border-box;
+      padding: 60px;
     }
 
     .left {
@@ -27,118 +30,126 @@
       justify-content: center;
     }
 
-    .left h1 {
-      font-size: 3rem;
+    h1 {
+      font-size: 3.8rem;
       margin: 0;
+      line-height: 1.2;
     }
 
-    .left h1 i {
+    h1 i {
       font-style: italic;
     }
 
     .announcement {
+      margin-top: 30px;
       color: red;
-      font-size: 1.2rem;
-      margin: 20px 0;
+      font-size: 1.25rem;
     }
 
     .email-signup {
-      margin-top: 30px;
+      margin-top: 40px;
     }
 
-    .email-signup input[type="email"] {
-      width: 100%;
+    .email-signup label {
+      font-size: 1rem;
+      color: #4285F4;
+    }
+
+    .email-signup input {
+      margin-top: 10px;
       padding: 12px;
+      width: 100%;
       font-size: 1rem;
       border: 1px solid #4285F4;
       border-radius: 4px;
-      margin-top: 10px;
     }
 
     .right {
-      background: #f4f4f4;
       position: relative;
+      background: #f2f2f2;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      overflow: hidden;
+      justify-content: center;
     }
 
-    .vertical-text {
+    .vertical-label {
       position: absolute;
-      left: 0;
       top: 0;
-      writing-mode: vertical-rl;
-      transform: rotate(180deg);
-      background-color: #4285F4;
+      left: 0;
+      background: #4285F4;
       color: white;
       padding: 10px;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
       font-weight: bold;
       letter-spacing: 2px;
     }
 
-    .circle {
+    .hero-object {
       width: 300px;
       height: 300px;
-      background: radial-gradient(circle, #f50 0%, #d30 100%);
       border-radius: 50%;
+      background: radial-gradient(circle, #ff5722 0%, #d84315 100%);
       margin-bottom: 40px;
     }
 
     .countdown {
-      font-size: 2rem;
-      font-weight: bold;
-      text-align: center;
+      font-size: 2.2rem;
       color: white;
+      font-weight: bold;
     }
 
-    .countdown-labels {
-      font-size: 0.9rem;
-      margin-top: 5px;
-      color: white;
+    .labels {
       display: flex;
       justify-content: space-between;
-      max-width: 280px;
+      font-size: 0.9rem;
+      color: white;
+      width: 250px;
+      margin-top: 6px;
     }
 
-    @media screen and (max-width: 768px) {
+    @media (max-width: 768px) {
       body {
         flex-direction: column;
       }
 
       .left, .right {
         width: 100%;
+        padding: 40px;
       }
 
-      .vertical-text {
-        display: none;
+      h1 {
+        font-size: 2.4rem;
       }
 
-      .circle {
+      .hero-object {
         width: 200px;
         height: 200px;
+      }
+
+      .vertical-label {
+        display: none;
       }
     }
   </style>
 </head>
 <body>
-
   <div class="left">
     <h1>A NEW ERA<br><i>In</i> LIVING<br>DESIGN</h1>
     <div class="announcement">🔴 Fascioli Studio Launching Soon</div>
 
     <div class="email-signup">
-      <div>Sign Up for Early Access & Special Deals</div>
+      <label>Sign Up for Early Access & Special Deals</label>
       <input type="email" placeholder="Email" />
     </div>
   </div>
 
   <div class="right">
-    <div class="vertical-text">UNVEILING_PROJECTS_0.01A</div>
-    <div class="circle"></div>
+    <div class="vertical-label">UNVEILING_PROJECTS_0.01A</div>
+    <div class="hero-object"></div>
     <div class="countdown" id="countdown">--:--:--:--</div>
-    <div class="countdown-labels">
+    <div class="labels">
       <div>Days</div>
       <div>Hours</div>
       <div>Minutes</div>
@@ -157,14 +168,14 @@
     function updateCountdown() {
       const now = new Date().getTime();
       const target = getNextMonthDate().getTime();
-      const distance = target - now;
+      const diff = target - now;
 
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-      document.getElementById("countdown").innerHTML =
+      document.getElementById("countdown").textContent =
         `${String(days).padStart(2, '0')}:${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     }
 
